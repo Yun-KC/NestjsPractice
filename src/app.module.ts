@@ -10,9 +10,9 @@ import * as mongoose from 'mongoose';
 
 @Module({
   imports: [
-    CatsModule,
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URL, { dbName: 'cats' }),
+    CatsModule,
     AuthModule,
   ],
   controllers: [AppController],
