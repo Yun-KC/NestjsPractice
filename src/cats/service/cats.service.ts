@@ -8,6 +8,12 @@ import { Cat } from '../cats.shcema';
 export class CatsService {
   constructor(private readonly CatsRepository: CatsRepository) {}
 
+  async getAllCats() {
+    const allCats = await this.CatsRepository.findAll();
+    const readOnlyCats = allCats.map((cat) => cat.readOnlyData);
+    return readOnlyCats;
+  }
+
   async uploadImg(cat: Cat, files: Express.Multer.File[]) {
     const fileName = `cats/${files[0].filename}`;
     console.log(fileName);
