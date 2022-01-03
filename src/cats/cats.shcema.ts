@@ -1,3 +1,4 @@
+import { Comments } from './../comments/comments.shcema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
@@ -57,6 +58,8 @@ export class Cat extends Document {
   @IsString()
   imgUrl: string;
 
+  readonly comments: Comments[];
+
   readonly readOnlyData: {
     id: string;
     email: string;
@@ -65,16 +68,25 @@ export class Cat extends Document {
   }; // 실제 db에 존재하는 필드는 아님!
 }
 
-export const CatSchema = SchemaFactory.createForClass(Cat);
-CatSchema.virtual('readOnlyData').get(function (this: Cat) {
+const _CatSchema = SchemaFactory.createForClass(Cat);
+_CatSchema.virtual('readOnlyData').get(function (this: Cat) {
   return {
     id: this.id,
     email: this.email,
     name: this.name,
     imgUrl: this.imgUrl,
+    comments: this.comments,
   };
 });
+_CatSchema.virtual('comments', {
+  ref: 'comments',
+  localField: '_id',
+  foreignField: 'info',
+});
+_CatSchema.set('toObject', { virtuals: true });
+_CatSchema.set('toJSON', { virtuals: true });
 
+export const CatSchema = _CatSchema;
 /* 
 함수 매개변수에 this가 들어갈 수 있는 방법
 
